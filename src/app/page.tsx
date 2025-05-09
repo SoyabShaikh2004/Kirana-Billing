@@ -21,7 +21,7 @@ export default function Home() {
   
   // State for UI control
   const [activeTab, setActiveTab] = useState<'new' | 'search'>('new');
-  const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
   const [viewingBill, setViewingBill] = useState<SampleBill | null>(null);
 
   // Initialize bill number on first load
@@ -63,14 +63,14 @@ export default function Home() {
     setViewingBill(null);
   };
 
-  // Print preview
-  const openPrintPreview = () => {
-    setShowPrintPreview(true);
+  // PDF preview
+  const openPDFPreview = () => {
+    setShowPDFPreview(true);
   };
 
-  // Close print preview
-  const closePrintPreview = () => {
-    setShowPrintPreview(false);
+  // Close PDF preview
+  const closePDFPreview = () => {
+    setShowPDFPreview(false);
   };
 
   // Current bill object
@@ -165,7 +165,7 @@ export default function Home() {
             {items.length > 0 ? (
               <>
                 <BillDisplay bill={currentBill} removeItem={removeItem} />
-                <BillActions bill={currentBill} openPrintPreview={openPrintPreview} />
+                <BillActions bill={currentBill} openPDFPreview={openPDFPreview} />
               </>
             ) : (
               <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
@@ -204,22 +204,12 @@ export default function Home() {
         )}
 
         {/* Print Preview Modal */}
-        {showPrintPreview && (
+        {showPDFPreview && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
               <div className="p-4 border-b flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Print Preview</h2>
+                <h2 className="text-xl font-semibold">PDF Preview</h2>
                 <div className="flex gap-4">
-                  <button 
-                    onClick={() => {
-                      window.print();
-                      // In a real app, this would trigger actual printing
-                      alert('In a real app, this would print the bill');
-                    }}
-                    className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
-                  >
-                    Print
-                  </button>
                   <button 
                     onClick={() => {
                       downloadPDF(currentBill);
@@ -229,7 +219,7 @@ export default function Home() {
                     Download PDF
                   </button>
                   <button 
-                    onClick={closePrintPreview}
+                    onClick={closePDFPreview}
                     className="text-gray-500 hover:text-gray-700"
                   >
                     Close

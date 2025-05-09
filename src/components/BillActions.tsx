@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { Bill } from '@/types';
 import { 
-  FaPrint, 
   FaWhatsapp, 
-  FaSms, 
   FaDownload 
 } from 'react-icons/fa';
 import { formatCurrency, formatDate } from '@/utils/billUtils';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface BillActionsProps {
   bill: Bill;
-  openPrintPreview: () => void;
+  openPDFPreview: () => void;
 }
 
 // Export this function to be used elsewhere
@@ -44,8 +42,8 @@ export const downloadPDF = (bill: Bill) => {
     formatCurrency(item.total)
   ]);
   
-  // @ts-ignore - jsPDF-autotable typings
-  doc.autoTable({
+  // Use autoTable plugin
+  autoTable(doc, {
     head: [tableColumn],
     body: tableRows,
     startY: 55,
@@ -54,7 +52,6 @@ export const downloadPDF = (bill: Bill) => {
   });
   
   // Get the final Y position after the table
-  // @ts-ignore - jsPDF-autotable typings
   const finalY = (doc as any).lastAutoTable.finalY || 150;
   
   // Add grand total
@@ -68,7 +65,7 @@ export const downloadPDF = (bill: Bill) => {
   doc.save(`Bill-${bill.billNumber}.pdf`);
 };
 
-export default function BillActions({ bill, openPrintPreview }: BillActionsProps) {
+export default function BillActions({ bill, openPDFPreview }: BillActionsProps) {
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [shareMessage, setShareMessage] = useState('');
 
@@ -101,14 +98,7 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Bill Actions</h2>
       
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <button 
-          onClick={openPrintPreview}
-          className="flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          <FaPrint /> Print
-        </button>
-        
+      <div className="grid grid-cols-2 gap-3">
         <button 
           onClick={() => downloadPDF(bill)}
           className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
@@ -121,13 +111,6 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
           className="flex items-center justify-center gap-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
         >
           <FaWhatsapp /> WhatsApp
-        </button>
-        
-        <button 
-          onClick={() => handleShare()}
-          className="flex items-center justify-center gap-2 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
-        >
-          <FaSms /> SMS
         </button>
       </div>
       
