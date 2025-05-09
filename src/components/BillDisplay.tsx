@@ -1,4 +1,4 @@
-import { Bill, BillItem } from '@/types';
+import { Bill } from '@/types';
 import { formatCurrency, formatDate } from '@/utils/billUtils';
 
 interface BillDisplayProps {

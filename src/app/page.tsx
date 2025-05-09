@@ -140,7 +140,7 @@ export default function Home() {
                 </label>
                 <DatePicker
                   selected={date}
-                  onChange={(date: Date) => setDate(date)}
+                  onChange={(date: Date | null) => date && setDate(date)}
                   dateFormat="dd/MM/yyyy"
                   className="block w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
                   aria-label="Select date"

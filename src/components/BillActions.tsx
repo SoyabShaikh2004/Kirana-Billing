@@ -33,7 +33,7 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
     return text;
   };
 
-  const handleShare = (type: 'whatsapp' | 'sms') => {
+  const handleShare = () => {
     const text = generateTextBill();
     setShareMessage(text);
     
@@ -67,14 +67,14 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
         </button>
         
         <button 
-          onClick={() => handleShare('whatsapp')}
+          onClick={() => handleShare()}
           className="flex items-center justify-center gap-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
         >
           <FaWhatsapp /> WhatsApp
         </button>
         
         <button 
-          onClick={() => handleShare('sms')}
+          onClick={() => handleShare()}
           className="flex items-center justify-center gap-2 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
         >
           <FaSms /> SMS
@@ -93,7 +93,7 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
             </button>
           </div>
           <p className="text-sm text-gray-600 mb-2">
-            In a real app, this would open the respective sharing option. For this demo, here's the text content:
+            In a real app, this would open the respective sharing option. For this demo, here&apos;s the text content:
           </p>
           <pre className="text-xs bg-gray-100 p-3 rounded whitespace-pre-wrap">
             {shareMessage}
