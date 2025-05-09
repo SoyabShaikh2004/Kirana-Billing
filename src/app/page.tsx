@@ -9,7 +9,7 @@ import { generateBillNumber, sampleBills } from '@/utils/billUtils';
 
 import ItemEntryForm from '@/components/ItemEntryForm';
 import BillDisplay from '@/components/BillDisplay';
-import BillActions from '@/components/BillActions';
+import BillActions, { downloadPDF } from '@/components/BillActions';
 import BillSearch from '@/components/BillSearch';
 
 export default function Home() {
@@ -144,6 +144,7 @@ export default function Home() {
                   dateFormat="dd/MM/yyyy"
                   className="block w-full p-2 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
                   aria-label="Select date"
+                  title="Select date"
                 />
               </div>
               
@@ -218,6 +219,14 @@ export default function Home() {
                     className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
                   >
                     Print
+                  </button>
+                  <button 
+                    onClick={() => {
+                      downloadPDF(currentBill);
+                    }}
+                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                  >
+                    Download PDF
                   </button>
                   <button 
                     onClick={closePrintPreview}

@@ -12,8 +12,8 @@ export default function BillDisplay({ bill, removeItem, isPreview = false }: Bil
     <div className={`bg-white rounded-lg shadow-md ${isPreview ? 'p-8' : 'p-6'}`}>
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">Malik Kirana Shop</h1>
-        <p className="text-sm text-gray-600">123 Main Street, City, State - 123456</p>
-        <p className="text-sm text-gray-600">Phone: +91 98765 43210</p>
+        <p className="text-sm text-gray-600">Chichpada Naka, Vasai (E), 401208</p>
+        <p className="text-sm text-gray-600">Phone: +91 9834540990</p>
       </div>
 
       <div className="flex justify-between mb-6">

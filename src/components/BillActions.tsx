@@ -7,11 +7,66 @@ import {
   FaDownload 
 } from 'react-icons/fa';
 import { formatCurrency, formatDate } from '@/utils/billUtils';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 interface BillActionsProps {
   bill: Bill;
   openPrintPreview: () => void;
 }
+
+// Export this function to be used elsewhere
+export const downloadPDF = (bill: Bill) => {
+  // Create PDF document
+  const doc = new jsPDF();
+  
+  // Add shop title
+  doc.setFontSize(18);
+  doc.text('Malik Kirana Shop', 105, 15, { align: 'center' });
+  
+  // Add shop details
+  doc.setFontSize(10);
+  doc.text('Chichpada Naka, Vasai (E), 401208', 105, 22, { align: 'center' });
+  doc.text('Phone: +91 9834540990', 105, 27, { align: 'center' });
+  
+  // Add bill details
+  doc.setFontSize(12);
+  doc.text(`Bill No: ${bill.billNumber}`, 14, 40);
+  doc.text(`Date: ${formatDate(bill.date)}`, 14, 48);
+  
+  // Add items table
+  const tableColumn = ["#", "Item", "Price", "Qty", "Total"];
+  const tableRows = bill.items.map((item, index) => [
+    index + 1,
+    item.name,
+    formatCurrency(item.price),
+    item.quantity,
+    formatCurrency(item.total)
+  ]);
+  
+  // @ts-ignore - jsPDF-autotable typings
+  doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 55,
+    theme: 'striped',
+    styles: { fontSize: 10 }
+  });
+  
+  // Get the final Y position after the table
+  // @ts-ignore - jsPDF-autotable typings
+  const finalY = (doc as any).lastAutoTable.finalY || 150;
+  
+  // Add grand total
+  doc.text(`Grand Total: ${formatCurrency(bill.grandTotal)}`, 140, finalY + 10, { align: 'right' });
+  
+  // Add thank you note
+  doc.setFontSize(10);
+  doc.text('Thank you for your business!', 105, finalY + 25, { align: 'center' });
+  
+  // Save the PDF
+  doc.save(`Bill-${bill.billNumber}.pdf`);
+};
 
 export default function BillActions({ bill, openPrintPreview }: BillActionsProps) {
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -55,15 +110,10 @@ export default function BillActions({ bill, openPrintPreview }: BillActionsProps
         </button>
         
         <button 
-          onClick={() => {
-            const textBill = generateTextBill();
-            console.log('Downloading bill as text:');
-            console.log(textBill);
-            alert('In a real app, this would download the bill as PDF');
-          }}
+          onClick={() => downloadPDF(bill)}
           className="flex items-center justify-center gap-2 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
         >
-          <FaDownload /> Download
+          <FaDownload /> Download PDF
         </button>
         
         <button 
