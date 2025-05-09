@@ -1,1 +1,11 @@
- 
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "buildCommand": "CI=false npm run build",
+  "outputDirectory": ".next",
+  "ignoreCommand": "exit 0",
+  "cleanUrls": true
+} 
