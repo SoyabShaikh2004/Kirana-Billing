@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Malik Kirana Shop Billing Application
+
+A frontend-only Next.js application designed for shop owners to create and manage bills efficiently.
+
+## Features
+
+- **Item Entry Form:** Add items to bills with name, price, and quantity
+- **Auto Bill Calculation:** Automatic calculation of item totals and grand total
+- **Unique Bill Number Generation:** Automatically generates unique bill numbers for each new bill
+- **Date Selection:** Choose billing date through a user-friendly date picker
+- **Bill Display:** Clear, organized display of the current bill with all details
+- **Print/Download:** Simulated functionality to print or download bills as PDFs
+- **Search Past Bills:** Look up previous bills by number, customer name, or date (simulated with sample data)
+- **Responsive Design:** Layout adapts well to different screen sizes
+- **WhatsApp/SMS Sharing:** Simulated functionality to share bills via messaging platforms
+
+## Tech Stack
+
+- **Next.js** for the frontend framework
+- **TypeScript** for type-safe code
+- **Tailwind CSS** for styling
+- **React Hooks** for state management
+- **React DatePicker** for the date selection component
+- **React Icons** for UI icons
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (v14.x or later)
+- npm (v6.x or later)
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/malik-kirana.git
+cd malik-kirana
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Development Notes
 
-To learn more about Next.js, take a look at the following resources:
+This is a frontend-only implementation, with simulated data persistence. In a production environment, you would want to:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Connect to a backend server for data persistence
+- Add user authentication for security
+- Implement proper error handling
+- Add comprehensive testing
+- Enhance the print functionality to generate proper PDF documents
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License - see the LICENSE file for details.
