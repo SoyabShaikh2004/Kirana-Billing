@@ -11,9 +11,5 @@ export interface Bill {
   date: Date;
   items: BillItem[];
   grandTotal: number;
-}
-
-export interface SampleBill extends Bill {
   customerName?: string;
-  customerPhone?: string;
 } 
