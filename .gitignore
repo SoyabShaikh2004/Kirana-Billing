@@ -39,3 +39,5 @@ next-env.d.ts
 # Added to force a new commit for Vercel
 /dist
 .cache
+
+.vercel
