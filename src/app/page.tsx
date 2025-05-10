@@ -67,6 +67,7 @@ export default function Home() {
     date,
     items,
     grandTotal,
+    totalAmount: grandTotal,
     customerName: customerName.trim() || undefined
   };
 

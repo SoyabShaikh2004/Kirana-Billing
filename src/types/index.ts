@@ -11,5 +11,6 @@ export interface Bill {
   date: Date;
   items: BillItem[];
   grandTotal: number;
+  totalAmount: number;
   customerName?: string;
 } 

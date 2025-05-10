@@ -6,6 +6,8 @@ import {
 import { formatCurrency, formatDate } from '@/utils/billUtils';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface BillActionsProps {
   bill: Bill;
@@ -26,133 +28,104 @@ const formatPDFCurrency = (amount: number): string => {
 
 // Export this function to be used elsewhere
 export const downloadPDF = (bill: Bill) => {
-  // Function to convert image to base64
-  const getBase64Image = (imgPath: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL('image/jpeg');
-        resolve(dataURL);
-      };
-      img.onerror = error => {
-        reject(error);
-      };
-      img.src = imgPath;
+  try {
+    // Create a new jsPDF instance
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
     });
-  };
 
-  // First get the logo as base64
-  getBase64Image('/Logo.jpg')
-    .then(logoBase64 => {
-      // Create PDF document with better formatting options
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-        putOnlyUsedFonts: true,
-        compress: true
-      });
+    // Set document properties
+    doc.setProperties({
+      title: `Malik Kirana Shop - Invoice ${bill.billNumber}`,
+      subject: 'Invoice',
+      author: 'Malik Kirana Shop',
+      creator: 'Billing System'
+    });
+
+    // Add page background
+    doc.setFillColor(249, 250, 251); // Very light gray
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // Add border
+    doc.setDrawColor(226, 232, 240); // Slate-200
+    doc.setLineWidth(0.5);
+    doc.rect(5, 5, 200, 287, 'S');
+
+    try {
+      // Load logo image
+      const logo = new Image();
+      logo.src = '/Logo.jpg';
       
-      // Add background color
-      doc.setFillColor(248, 250, 252); // Light gray background
-      doc.rect(0, 0, 210, 297, 'F');
-      
-      // Add border
-      doc.setDrawColor(226, 232, 240);
-      doc.setLineWidth(0.5);
-      doc.rect(10, 10, 190, 277, 'S');
-      
-      // Add header with background
-      doc.setFillColor(21, 128, 61); // Green header
-      doc.rect(10, 10, 190, 30, 'F');
+      // Add header with logo
+      doc.setFillColor(21, 128, 61); // Green-700
+      doc.rect(5, 5, 200, 30, 'F');
       
       // Add logo
-      doc.addImage(logoBase64, 'JPEG', 15, 15, 20, 20);
+      doc.addImage(logo, 'JPEG', 15, 10, 20, 20);
       
-      // Add shop title
-      doc.setFont('helvetica', 'bold');
+      // Add shop name and info
       doc.setTextColor(255, 255, 255); // White text
-      doc.setFontSize(20);
-      doc.text('Malik Kirana Shop', 105, 22, { align: 'center' });
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text('Malik Kirana Shop', 105, 15, { align: 'center' });
       
-      // Add shop details
-      doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text('Chichpada Naka, Vasai (E), 401208 | Phone: +91 9834540990', 105, 30, { align: 'center' });
-      
-      // Add INVOICE text
-      doc.setFillColor(241, 245, 249); // Light blue-gray
-      doc.roundedRect(10, 45, 190, 12, 2, 2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(15, 23, 42); // Dark text
-      doc.setFontSize(12);
-      doc.text('INVOICE', 105, 53, { align: 'center' });
-      
-      // Add bill details section
-      const billDetailsY = 65;
-      const colWidth = 90;
-      const labelFont = 9;
-      const valueFont = 10;
-      
-      // Left column - Bill details
-      doc.setFillColor(241, 245, 249); // Light blue-gray
-      doc.roundedRect(10, billDetailsY, colWidth, 20, 1, 1, 'F');
-      
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(labelFont);
-      doc.setTextColor(71, 85, 105); // Slate-500
-      doc.text('Bill Number:', 15, billDetailsY + 7);
-      doc.text('Date:', 15, billDetailsY + 15);
-      
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(valueFont);
-      doc.setTextColor(15, 23, 42); // Slate-900
-      doc.text(bill.billNumber, 40, billDetailsY + 7);
-      doc.text(formatDate(bill.date), 40, billDetailsY + 15);
+      doc.text('Chichpada Naka, Vasai (E), 401208', 105, 22, { align: 'center' });
+      doc.text('Mobile: +91 9834540990', 105, 27, { align: 'center' });
       
-      // Right column - Customer details
-      doc.setFillColor(241, 245, 249); // Light blue-gray
-      doc.roundedRect(110, billDetailsY, colWidth, 20, 1, 1, 'F');
-      
+      // Add bill title
+      doc.setTextColor(0, 0, 0); // Black text
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(labelFont);
-      doc.setTextColor(71, 85, 105); // Slate-500
-      doc.text('Customer:', 115, billDetailsY + 7);
+      doc.setFontSize(14);
+      doc.text('INVOICE', 105, 40, { align: 'center' });
       
+      // Add bill info box
+      doc.setFillColor(243, 244, 246); // Gray-100
+      doc.roundedRect(10, 45, 95, 25, 3, 3, 'F');
+      
+      doc.setFontSize(10);
+      doc.text(`Bill No: ${bill.billNumber}`, 15, 53);
+      doc.text(`Date: ${formatDate(bill.date)}`, 15, 60);
+      
+      // Add customer box
+      doc.setFillColor(243, 244, 246); // Gray-100
+      doc.roundedRect(110, 45, 95, 25, 3, 3, 'F');
+      
+      doc.text('Customer Details', 115, 53);
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(valueFont);
-      doc.setTextColor(15, 23, 42); // Slate-900
-      doc.text(bill.customerName || 'Walk-in Customer', 140, billDetailsY + 7);
+      if (bill.customerName) {
+        doc.text(`Name: ${bill.customerName}`, 115, 60);
+      } else {
+        doc.text('Walk-in Customer', 115, 60);
+      }
       
-      // Add items table with better styling
-      const tableColumn = ["#", "Item", "Price", "Qty", "Total"];
+      // Add table title
+      doc.setFillColor(21, 128, 61); // Green-700
+      doc.roundedRect(10, 75, 190, 8, 2, 2, 'F');
+      
+      doc.setTextColor(255, 255, 255); // White text
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text('ITEM DETAILS', 105, 80, { align: 'center' });
+      
+      // Prepare table data
+      const tableColumn = ['#', 'Item', 'Price', 'Qty', 'Total'];
       const tableRows = bill.items.map((item, index) => [
-        index + 1,
+        (index + 1).toString(),
         item.name,
         formatPDFCurrency(item.price),
-        item.quantity,
+        item.quantity.toString(),
         formatPDFCurrency(item.total)
       ]);
       
-      // Table title
-      doc.setFillColor(241, 245, 249); // Light blue-gray
-      doc.roundedRect(10, 95, 190, 8, 1, 1, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42); // Dark text
-      doc.text('ITEM DETAILS', 20, 100);
-      
-      // Use autoTable plugin with better styling
+      // Add items table
       autoTable(doc, {
+        startY: 85,
         head: [tableColumn],
         body: tableRows,
-        startY: 105,
         theme: 'grid',
         headStyles: {
           fillColor: [21, 128, 61], // Green header
@@ -160,22 +133,17 @@ export const downloadPDF = (bill: Bill) => {
           fontStyle: 'bold',
           halign: 'center'
         },
-        bodyStyles: {
-          textColor: [15, 23, 42],
-          fontSize: 10
-        },
-        alternateRowStyles: {
-          fillColor: [248, 250, 252] // Very light blue-gray for alternate rows
-        },
         columnStyles: {
           0: { halign: 'center', cellWidth: 10 }, // #
           1: { halign: 'left', cellWidth: 70 }, // Item - wider for item names
-          2: { halign: 'center', cellWidth: 35 }, // Price - wider for currency
+          2: { halign: 'center', cellWidth: 35 }, // Price - centered
           3: { halign: 'center', cellWidth: 15 }, // Qty
-          4: { halign: 'center', cellWidth: 35 }  // Total - wider for currency
+          4: { halign: 'center', cellWidth: 35 }  // Total - centered
         },
-        margin: { left: 10, right: 10 },
-        tableWidth: 190
+        alternateRowStyles: {
+          fillColor: [243, 244, 246] // Gray-100
+        },
+        margin: { left: 10, right: 10 }
       });
       
       // Get the final Y position after the table
@@ -192,62 +160,80 @@ export const downloadPDF = (bill: Bill) => {
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(21, 128, 61); // Green text
       doc.setFontSize(12);
-      
-      // Left-align "Grand Total:" text
       doc.text('Grand Total:', 110, finalY + 18);
-      
-      // Right-align the amount with some padding
       const grandTotalText = formatPDFCurrency(bill.grandTotal);
       doc.text(grandTotalText, 190, finalY + 18, { align: 'right' });
+      
+      // Add QR code for payment
+      // Create QR code value with UPI details
+      const upiUrl = `upi://pay?pa=malik.shaikh15@axl&pn=Malik%20Kirana&am=${bill.totalAmount.toFixed(2)}&cu=INR&tn=Bill%20Payment`;
+      
+      // Create QR code
+      const qrCodeImage = document.createElement('canvas');
+      const QRCode = require('qrcode');
+      QRCode.toCanvas(qrCodeImage, upiUrl, { 
+        width: 150,
+        margin: 1,
+        errorCorrectionLevel: 'H'
+      });
+      
+      // Convert canvas to data URL
+      const qrDataUrl = qrCodeImage.toDataURL('image/png');
+      
+      // Add QR code to PDF
+      const qrWidth = 40; // mm
+      const qrHeight = 40; // mm
+      const qrX = 30; // Left position
+      const qrY = finalY + 30; // Below grand total
+      
+      doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrWidth, qrHeight);
+      
+      // Add payment info text
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Scan to Pay', qrX + qrWidth/2, qrY - 5, { align: 'center' });
+      
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text('UPI ID: malik.shaikh15@axl', qrX + qrWidth/2, qrY + qrHeight + 5, { align: 'center' });
+      doc.text('Phone: +91 77983 50965', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
+      doc.text(`Amount: ${formatPDFCurrency(bill.totalAmount)}`, qrX + qrWidth/2, qrY + qrHeight + 15, { align: 'center' });
       
       // Add thank you note
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(10);
       doc.setTextColor(71, 85, 105); // Slate-500
-      doc.text('Thank you for your business!', 105, finalY + 40, { align: 'center' });
-      
-      // Add footer with date and page numbers
-      const currentDate = new Date().toLocaleDateString();
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(100, 116, 139); // Slate-400
-      doc.text(`Generated on: ${currentDate}`, 20, 287);
-      doc.text('Page 1 of 1', 190, 287, { align: 'right' });
+      doc.text('Thank you for your business!', 105, 285, { align: 'center' });
       
       // Save the PDF
-      doc.save(`Invoice-${bill.billNumber}.pdf`);
-    })
-    .catch(error => {
-      console.error('Error loading logo:', error);
-      alert('Failed to load logo. Please try again.');
+      doc.save(`Malik_Kirana_Bill_${bill.billNumber}.pdf`);
+    } catch (logoError) {
+      console.error('Error loading logo, using simplified design', logoError);
       
-      // Simple fallback PDF without fancy styling
-      const doc = new jsPDF();
-      
-      // Add shop title
+      // Use a simplified design without logo
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
-      doc.text('Malik Kirana Shop', 105, 15, { align: 'center' });
+      doc.text('Malik Kirana Shop', 105, 20, { align: 'center' });
       
-      // Add shop details
       doc.setFontSize(10);
-      doc.text('Chichpada Naka, Vasai (E), 401208', 105, 22, { align: 'center' });
-      doc.text('Phone: +91 9834540990', 105, 27, { align: 'center' });
+      doc.setFont('helvetica', 'normal');
+      doc.text('Chichpada Naka, Vasai (E), 401208', 105, 27, { align: 'center' });
+      doc.text('Mobile: +91 9834540990', 105, 33, { align: 'center' });
+      doc.text(`Bill No: ${bill.billNumber} | Date: ${formatDate(bill.date)}`, 105, 40, { align: 'center' });
       
-      // Add bill details
-      doc.setFontSize(12);
-      doc.text(`Bill No: ${bill.billNumber}`, 14, 40);
-      doc.text(`Date: ${formatDate(bill.date)}`, 14, 48);
       if (bill.customerName) {
-        doc.text(`Customer: ${bill.customerName}`, 14, 56);
+        doc.text(`Customer: ${bill.customerName}`, 105, 47, { align: 'center' });
       }
       
-      // Add items table
-      const tableColumn = ["#", "Item", "Price", "Qty", "Total"];
+      // Prepare table data
+      const tableColumn = ['#', 'Item', 'Price', 'Qty', 'Total'];
       const tableRows = bill.items.map((item, index) => [
-        index + 1,
+        (index + 1).toString(),
         item.name,
         formatPDFCurrency(item.price),
-        item.quantity,
+        item.quantity.toString(),
         formatPDFCurrency(item.total)
       ]);
       
@@ -255,9 +241,8 @@ export const downloadPDF = (bill: Bill) => {
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
-        startY: bill.customerName ? 65 : 55,
-        theme: 'striped',
-        styles: { fontSize: 10 },
+        startY: bill.customerName ? 55 : 50,
+        theme: 'grid',
         columnStyles: {
           0: { halign: 'center' }, // #
           1: { halign: 'left' },  // Item
@@ -285,13 +270,53 @@ export const downloadPDF = (bill: Bill) => {
       const grandTotalText = formatPDFCurrency(bill.grandTotal);
       doc.text(grandTotalText, 190, finalY + 18, { align: 'right' });
       
-      // Add thank you note
-      doc.setFontSize(10);
-      doc.text('Thank you for your business!', 105, finalY + 25, { align: 'center' });
+      // Add QR code for payment
+      try {
+        // Create QR code value with UPI details
+        const upiUrl = `upi://pay?pa=malik.shaikh15@axl&pn=Malik%20Kirana&am=${bill.totalAmount.toFixed(2)}&cu=INR&tn=Bill%20Payment`;
+        
+        // Create QR code
+        const qrCodeImage = document.createElement('canvas');
+        const QRCode = require('qrcode');
+        QRCode.toCanvas(qrCodeImage, upiUrl, { 
+          width: 150,
+          margin: 1,
+          errorCorrectionLevel: 'H'
+        });
+        
+        // Convert canvas to data URL
+        const qrDataUrl = qrCodeImage.toDataURL('image/png');
+        
+        // Add QR code to PDF
+        const qrWidth = 40; // mm
+        const qrHeight = 40; // mm
+        const qrX = 30; // Left position
+        const qrY = finalY + 30; // Below grand total
+        
+        doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrWidth, qrHeight);
+        
+        // Add payment info text
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Scan to Pay', qrX + qrWidth/2, qrY - 5, { align: 'center' });
+        
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.text('UPI ID: malik.shaikh15@axl', qrX + qrWidth/2, qrY + qrHeight + 5, { align: 'center' });
+        doc.text('Phone: +91 77983 50965', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
+        doc.text(`Amount: ${formatPDFCurrency(bill.totalAmount)}`, qrX + qrWidth/2, qrY + qrHeight + 15, { align: 'center' });
+      } catch (qrError) {
+        console.error('Error generating QR code', qrError);
+      }
       
       // Save the PDF
-      doc.save(`Invoice-${bill.billNumber}.pdf`);
-    });
+      doc.save(`Malik_Kirana_Bill_${bill.billNumber}.pdf`);
+    }
+  } catch (error) {
+    console.error('Error generating PDF', error);
+    alert('Could not generate PDF. Please try again.');
+  }
 };
 
 export default function BillActions({ bill, openPDFPreview }: BillActionsProps) {

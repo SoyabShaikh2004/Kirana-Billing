@@ -1,5 +1,6 @@
 import { Bill } from '@/types';
 import { formatCurrency, formatDate } from '@/utils/billUtils';
+import PaymentQRCode from './PaymentQRCode';
 
 interface BillDisplayProps {
   bill: Bill;
@@ -9,7 +10,7 @@ interface BillDisplayProps {
 
 export default function BillDisplay({ bill, removeItem, isPreview = false }: BillDisplayProps) {
   return (
-    <div className={`bg-white rounded-lg shadow-md ${isPreview ? 'p-4' : 'p-3'}`}>
+    <div id="bill-content" className={`bg-white rounded-lg shadow-md ${isPreview ? 'p-4' : 'p-3'}`}>
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold">Malik Kirana Shop</h1>
         <p className="text-sm text-gray-600">Chichpada Naka, Vasai (E), 401208</p>
@@ -98,6 +99,15 @@ export default function BillDisplay({ bill, removeItem, isPreview = false }: Bil
             </tfoot>
           </table>
         </div>
+      </div>
+
+      {/* Payment QR Code */}
+      <div className="mt-4 border-t pt-4">
+        <PaymentQRCode
+          amount={bill.grandTotal}
+          upiId="malik.shaikh15@axl"
+          phoneNumber="+91 77983 50965"
+        />
       </div>
 
       {isPreview && (
