@@ -75,7 +75,7 @@ export default function Home() {
     <main className="min-h-screen bg-gray-100 p-2 sm:p-6">
       <div className="max-w-xl mx-auto">
         <div className="space-y-4">
-          {/* Bill Header Section */}
+            {/* Bill Header Section */}
           <div className="bg-white p-4 rounded-lg shadow-md relative">
             <div className="absolute top-2 right-3 flex flex-col text-xs text-gray-400">
               <div className="flex items-center">
@@ -87,7 +87,7 @@ export default function Home() {
                 <span>{formatDate(date)}</span>
               </div>
               <div className="flex justify-end mt-1">
-                <button 
+                <button
                   onClick={createNewBill}
                   title="New Bill"
                   className="text-gray-400 hover:text-green-600 transition-colors"
@@ -133,24 +133,24 @@ export default function Home() {
                   />
                 </div>
               </div>
+              </div>
             </div>
-          </div>
-          
-          {/* Item Entry Form */}
-          <ItemEntryForm addItem={addItem} />
-          
-          {/* Bill Display */}
-          {items.length > 0 ? (
-            <>
-              <BillDisplay bill={currentBill} removeItem={removeItem} />
+            
+            {/* Item Entry Form */}
+            <ItemEntryForm addItem={addItem} />
+            
+            {/* Bill Display */}
+            {items.length > 0 ? (
+              <>
+                <BillDisplay bill={currentBill} removeItem={removeItem} />
               <BillActions bill={currentBill} openPDFPreview={openPDFPreview} />
-            </>
-          ) : (
-            <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
-              No items added to bill yet. Use the form above to add items.
-            </div>
-          )}
-        </div>
+              </>
+            ) : (
+              <div className="bg-white p-6 rounded-lg shadow-md text-center text-gray-500">
+                No items added to bill yet. Use the form above to add items.
+              </div>
+            )}
+          </div>
 
         {/* PDF Preview Modal */}
         {showPDFPreview && (

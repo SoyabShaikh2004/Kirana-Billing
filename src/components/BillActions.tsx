@@ -197,7 +197,7 @@ export const downloadPDF = (bill: Bill) => {
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
       doc.text('UPI ID: malik.shaikh15@axl', qrX + qrWidth/2, qrY + qrHeight + 5, { align: 'center' });
-      doc.text('Phone: +91 77983 50965', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
+      doc.text('Phone: +91 98345 40990', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
       doc.text(`Amount: ${formatPDFCurrency(bill.totalAmount)}`, qrX + qrWidth/2, qrY + qrHeight + 15, { align: 'center' });
       
       // Add thank you note
@@ -304,7 +304,7 @@ export const downloadPDF = (bill: Bill) => {
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
         doc.text('UPI ID: malik.shaikh15@axl', qrX + qrWidth/2, qrY + qrHeight + 5, { align: 'center' });
-        doc.text('Phone: +91 77983 50965', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
+        doc.text('Phone: +91 98345 40990', qrX + qrWidth/2, qrY + qrHeight + 10, { align: 'center' });
         doc.text(`Amount: ${formatPDFCurrency(bill.totalAmount)}`, qrX + qrWidth/2, qrY + qrHeight + 15, { align: 'center' });
       } catch (qrError) {
         console.error('Error generating QR code', qrError);

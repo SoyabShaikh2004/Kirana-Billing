@@ -106,7 +106,7 @@ export default function BillDisplay({ bill, removeItem, isPreview = false }: Bil
         <PaymentQRCode
           amount={bill.grandTotal}
           upiId="malik.shaikh15@axl"
-          phoneNumber="+91 77983 50965"
+          phoneNumber="+91 98345 40990"
         />
       </div>
 
