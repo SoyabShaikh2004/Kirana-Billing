@@ -1,69 +1,60 @@
 # Malik Kirana Shop Billing Application
 
-A frontend-only Next.js application designed for shop owners to create and manage bills efficiently.
+## 🌐 Installation & Setup
 
-## Features
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
+3. Build for production:
+   ```bash
+   npm run build
+   ```
 
-- **Item Entry Form:** Add items to bills with name, price, and quantity
-- **Auto Bill Calculation:** Automatic calculation of item totals and grand total
-- **Unique Bill Number Generation:** Automatically generates unique bill numbers for each new bill
-- **Date Selection:** Choose billing date through a user-friendly date picker
-- **Bill Display:** Clear, organized display of the current bill with all details
-- **Print/Download:** Simulated functionality to print or download bills as PDFs
-- **Search Past Bills:** Look up previous bills by number, customer name, or date (simulated with sample data)
-- **Responsive Design:** Layout adapts well to different screen sizes
-- **WhatsApp/SMS Sharing:** Simulated functionality to share bills via messaging platforms
+## 📁 Project Structure
 
-## Tech Stack
-
-- **Next.js** for the frontend framework
-- **TypeScript** for type-safe code
-- **Tailwind CSS** for styling
-- **React Hooks** for state management
-- **React DatePicker** for the date selection component
-- **React Icons** for UI icons
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14.x or later)
-- npm (v6.x or later)
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/malik-kirana.git
-cd malik-kirana
+```
+├── src/
+│   ├── app/                       # Next.js app directory (entry, layout, pages)
+│   │   ├── layout.tsx             # Root layout
+│   │   ├── page.tsx               # Main page (bill UI)
+│   │   └── globals.css            # Global styles (Tailwind)
+│   ├── components/                # React components
+│   │   ├── BillActions.tsx        # Bill actions (PDF, WhatsApp)
+│   │   ├── BillDisplay.tsx        # Bill display table
+│   │   ├── ItemEntryForm.tsx      # Item entry form
+│   │   └── PaymentQRCode.tsx      # UPI QR code generator
+│   ├── types/                     # TypeScript types
+│   │   └── index.ts
+│   └── utils/                     # Utility functions
+│       └── billUtils.ts
+├── public/                        # Static assets (logo, favicon)
+│   ├── Logo.jpg
+│   └── favicon.ico
+├── package.json                   # Project metadata & scripts
+├── tsconfig.json                  # TypeScript config
+├── next.config.mjs                # Next.js config
+├── postcss.config.mjs             # PostCSS config
+├── eslint.config.mjs              # ESLint config
+├── vercel.json                    # Vercel deployment config
+└── LICENSE                        # MIT License
 ```
 
-2. Install dependencies
-```bash
-npm install
-```
+## 🔧 Technologies & Stack
 
-3. Run the development server
-```bash
-npm run dev
-```
+### Primary Stack
+- Next.js (React, App Router, SSR)
+- TypeScript
+- Tailwind CSS
+- React Icons, React DatePicker, jsPDF, QRCode.react
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+### Development Tools
+- PostCSS, Node.js, npm, ESLint
 
-## Development Notes
+## 📝 License
 
-This is a frontend-only implementation, with simulated data persistence. In a production environment, you would want to:
-
-- Connect to a backend server for data persistence
-- Add user authentication for security
-- Implement proper error handling
-- Add comprehensive testing
-- Enhance the print functionality to generate proper PDF documents
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
